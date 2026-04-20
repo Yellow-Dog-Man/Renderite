@@ -1,0 +1,77 @@
+﻿<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- These are groups that will be used for batching some of the file copying operations -->
+  <ItemGroup>
+    <BuildPaths Include="$(WindowsPath);$(RailversePath)" />
+    <AllBuildPaths Include="@(BuildPaths);$(HeadlessPath)" />
+    <WindowsAndHeadless Include="$(WindowsPath);$(HeadlessPath)" />
+    <WindowsAndDebug Include="$(WindowsPath);$(WindowsDebugPath)" />
+  </ItemGroup>
+
+
+  <PropertyGroup>
+    <SystemNetHttp>$(OutDir)System.Net.Http.dll</SystemNetHttp>
+  </PropertyGroup>
+
+  <!-- This will run after the froox engine runner builds -->
+  <Target Name="CopyToBuilds" AfterTargets="PostBuildEvent">
+
+    <!-- Files to copy -->
+    <ItemGroup>
+      <BuildFilesNonRecursive Include="$(OutDir)*.dll;$(OutDir)*.so;$(OutDir)*.pdb;$(OutDir)*.xml;$(OutDir)*.config" />
+
+      <!-- Define excluded files from the unity APP folder -->
+      <FilesToRemove Include="$(OutDir)UnityEngine*.dll;$(OutDir)UnityEngine*.xml;$(SystemNetHttp)" />
+      <FilesToRemove Include="@(AppAssetsToRemove);@(WindowsPlugins);@(LinuxPlugins)" /> <!-- Include the predefined app assets so that they're removed too -->
+      
+      <!-- Copy the prerequisite files into the unity app path -->
+      <CopyToOutput
+        Include="@(BuildFilesNonRecursive)"
+        Exclude="@(FilesToRemove)"
+      >
+        <Destination>$(RenderiteRuntimePath)Assets/APP/Renderite/</Destination>
+      </CopyToOutput>
+      
+
+      <!-- Copy all of the managed DLLs into the managed path -->
+      <CopyToOutput
+        Include="$(OutDir)*.dll"
+        Exclude="@(FilesToRemove)"
+        >
+        <Destination>%(WindowsAndDebug.Identity)Renderer/Renderite.Renderer_Data/Managed/</Destination>
+      </CopyToOutput>
+      
+      <!-- Copy any shell-script files to the Renderer output -->
+      <CopyToOutput
+        Include="$(OutDir)*.sh"
+        >
+        <Destination>%(WindowsAndDebug.Identity)Renderer/</Destination>
+
+      </CopyToOutput>
+     
+    </ItemGroup>
+
+    <Message
+      Importance="High"
+      Text="[$(MSBuildProjectName)] Copying: &quot;%(Filename)%(Extension)&quot; --> &quot;%(CopyToOutput.Destination)%(RecursiveDir)%(Filename)%(Extension)&quot;"
+      Condition="Exists(%(CopyToOutput.Identity))"
+    />
+    
+    <Copy
+      SourceFiles="%(CopyToOutput.Identity)"
+      DestinationFiles="%(CopyToOutput.Destination)%(RecursiveDir)%(Filename)%(Extension)"
+      Condition="Exists(%(CopyToOutput.Identity))"
+      SkipUnchangedFiles="true"
+    />
+
+    <!-- Delete unwanted files in the unity APP folder just to be sure (this should eventually not be required) -->
+    <ItemGroup>
+      <UnwantedAppFiles Include="@(FilesToRemove -> '$(RenderiteRuntimePath)Assets/APP/Renderite/%(Filename)%(Extension)')" />
+    </ItemGroup>
+    <Message
+      Importance="High"
+      Text="[$(MSBuildProjectName)] Deleting: %(UnwantedAppFiles.Identity)"
+    />
+    
+    <Delete Files="@(UnwantedAppFiles)" />
+  </Target>
+</Project>

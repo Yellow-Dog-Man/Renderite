@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="Renderite.Shared/Renderite.Shared.csproj" />
+  <Project Path="Renderite.Unity/Renderite.Unity.csproj" />
+</Solution>
