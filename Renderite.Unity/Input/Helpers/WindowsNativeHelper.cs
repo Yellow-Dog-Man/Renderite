@@ -38,29 +38,31 @@ namespace Renderite.Unity
 
         static IntPtr _mainWindowHandle = IntPtr.Zero;
 
-        static IntPtr GetSelfMainWindowHandle() => GetMainWindowHandle(Process.GetCurrentProcess().Id);
-
-        public static IntPtr GetMainWindowHandle(int processId)
+        public static unsafe IntPtr GetSelfMainWindowHandle()
         {
             IntPtr mainWindow = IntPtr.Zero;
-
-            EnumWindows((hWnd, lParam) =>
-            {
-                GetWindowThreadProcessId(hWnd, out var windowPid);
-
-                if (windowPid == processId)
-                {
-                    // Check if it's a top-level visible window (not owned)
-                    if (GetWindow(hWnd, GW_OWNER) == IntPtr.Zero && IsWindowVisible(hWnd))
-                    {
-                        mainWindow = hWnd;
-                        return false;
-                    }
-                }
-                return true;
-            }, IntPtr.Zero);
-
+            EnumWindows(MainWindowPredicate, (IntPtr)(&mainWindow));
             return mainWindow;
+        }
+
+        [MonoPInvokeCallback(typeof(EnumWindowsProc))]
+        private static unsafe bool MainWindowPredicate(IntPtr hWnd, IntPtr lParam)
+        {
+            var mainWindowPtr = (IntPtr*)lParam;
+            var processId = Process.GetCurrentProcess().Id;
+            GetWindowThreadProcessId(hWnd, out var windowPid);
+
+            if (windowPid == processId)
+            {
+                // Check if it's a top-level visible window (not owned)
+                if (GetWindow(hWnd, GW_OWNER) == IntPtr.Zero && IsWindowVisible(hWnd))
+                {
+                    *mainWindowPtr = hWnd;
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         public static bool SetWindowTitle(string title)
