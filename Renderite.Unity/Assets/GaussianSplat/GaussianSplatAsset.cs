@@ -235,12 +235,11 @@ namespace Renderite.Unity
             fixed (void* ptr = data)
             {
                 var native = NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<T>(ptr, data.Length, Allocator.None);
-
-                // These types don't actually exist at runtime, but are required in the editor.
-                // It works at runtime, but I'm keeping these here in case we need to test in the editor
-                //var safetyHandle = AtomicSafetyHandle.Create();
-                //AtomicSafetyHandle.SetAllowReadOrWriteAccess(safetyHandle, true);
-                //NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref native, safetyHandle);
+#if ENABLE_UNITY_COLLECTIONS_CHECKS
+                var safetyHandle = AtomicSafetyHandle.Create();
+                AtomicSafetyHandle.SetAllowReadOrWriteAccess(safetyHandle, true);
+                NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref native, safetyHandle);
+#endif
 
                 buffer.SetData(native);
             }

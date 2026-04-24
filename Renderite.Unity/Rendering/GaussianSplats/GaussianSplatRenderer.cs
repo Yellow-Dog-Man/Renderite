@@ -148,9 +148,11 @@ namespace Renderite.Unity
             fixed (void* ptr = data)
             {
                 var native = NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<T>(ptr, data.Length, Allocator.None);
+#if ENABLE_UNITY_COLLECTIONS_CHECKS 
                 var safetyHandle = AtomicSafetyHandle.Create();
                 AtomicSafetyHandle.SetAllowReadOrWriteAccess(safetyHandle, true);
                 NativeArrayUnsafeUtility.SetAtomicSafetyHandle(ref native, safetyHandle);
+#endif
 
                 buffer.SetData(native);
             }
