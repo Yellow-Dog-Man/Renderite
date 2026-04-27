@@ -20,7 +20,7 @@
   <ItemGroup>
     <PackageReference Include="Enums.NET" Version="5.0.0" />
     <PackageReference Include="System.Memory" Version="4.6.3" />
-    <PackageReference Include="YellowDogMan.Cloudtoid.Interprocess" Version="1.0.7" />
+    <PackageReference Include="YellowDogMan.Cloudtoid.Interprocess" Version="1.0.8" />
     <PackageReference Include="YellowDogMan.Elements.Data" Version="1.0.0" />
   </ItemGroup>
 

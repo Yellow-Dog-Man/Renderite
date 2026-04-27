@@ -14,14 +14,14 @@
   <ItemGroup>
     <PackageReference Include="Enums.NET" Version="5.0.0" />
     <PackageReference Include="Microsoft.Bcl.HashCode" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.5" />
-    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="10.0.5" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.5" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="10.0.7" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.7" />
     <PackageReference Include="SharpDX" Version="4.2.0" />
     <PackageReference Include="SharpDX.Direct3D11" Version="4.2.0" />
     <PackageReference Include="SharpDX.DXGI" Version="4.2.0" />
     <PackageReference Include="System.Memory" Version="4.6.3" />
-    <PackageReference Include="System.Threading.Tasks.Dataflow" Version="10.0.5" />
+    <PackageReference Include="System.Threading.Tasks.Dataflow" Version="10.0.7" />
     <PackageReference Include="Unity3D" Version="3.1.1" />
     <PackageReference Include="YellowDogMan.CSCoreFork" Version="1.2.1.2-ydm-0.1.17" />
     <PackageReference Include="YellowDogMan.UnityNativeGraphicsProxy.NET" Version="0.2.1" />
