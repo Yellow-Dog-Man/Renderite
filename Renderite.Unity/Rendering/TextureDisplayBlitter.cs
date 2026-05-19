@@ -63,7 +63,7 @@ namespace Renderite.Unity
 
         IEnumerator Blit()
         {
-            var material = new UnityEngine.Material(UnityEngine.Shader.Find("Unlit/Texture"));
+            var material = new UnityEngine.Material(UnityEngine.Shader.Find("Unlit/Transparent"));
 
             for (; ; )
             {
