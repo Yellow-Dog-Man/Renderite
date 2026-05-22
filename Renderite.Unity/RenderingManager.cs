@@ -586,7 +586,7 @@ namespace Renderite.Unity
 
                 UpdateQualitySettings(vrActive);
             }           
-
+            Instance.OverlayCamera.gameObject.SetActive(!vrActive);
             return activeOutput;
         }
 
