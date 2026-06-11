@@ -34,5 +34,25 @@ namespace Renderite.Shared
 
         [DllImport("ntdll.dll", EntryPoint = "wine_get_version", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
         private static extern string wine_get_version();
+        
+        [DllImport("kernel32.dll", EntryPoint = "wine_get_unix_file_name", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
+        private static extern IntPtr wine_get_unix_file_name(string path);
+        
+        public static string? DosToUnix(string path)
+        {
+            IntPtr ptr = wine_get_unix_file_name(path);
+
+            if (ptr == IntPtr.Zero)
+                return null;
+
+            try
+            {
+                return Marshal.PtrToStringAnsi(ptr);
+            }
+            catch
+            {
+                return null;
+            }
+        }
     }
 }
