@@ -73,6 +73,7 @@ namespace Renderite.Unity
 
         bool firstUploadCompleted;
         IndexBufferFormat? lastIndexBufferFormat;
+        bool lastIsSkinned;
 
         void UpdateVertexLayout(MeshBuffer buffer, UnityEngine.Mesh mesh)
         {
@@ -258,13 +259,15 @@ namespace Renderite.Unity
                 Debug.Log($"Uploading Mesh {AssetId} (first: {!firstUploadCompleted}): {meshBuffer}\nHint: " + uploadHint +
                     "\nBounds: " + uploadData.bounds);
 
-            if (mesh != null && !mesh.isReadable)
+            if (mesh != null && (!mesh.isReadable || lastIsSkinned))
             {
                 if (mesh)
                     UnityEngine.Object.Destroy(mesh);
 
                 mesh = null;
             }
+
+            lastIsSkinned = false;
 
             bool instanceChanged = false;
 
@@ -330,6 +333,8 @@ namespace Renderite.Unity
                 if (!firstUploadCompleted)
                     yield return null;
 
+                lastIsSkinned = true;
+
                 UploadBonesBuffer(meshBuffer, mesh);
             }
 
@@ -338,6 +343,8 @@ namespace Renderite.Unity
             if (uploadHint[MeshUploadHint.Flag.Blendshapes] && meshBuffer.BlendshapeBufferCount > 0)
             {
                 yield return null;
+
+                lastIsSkinned = true;
 
                 if ((mesh.bindposes?.Length ?? 0) == 0)
                 {
