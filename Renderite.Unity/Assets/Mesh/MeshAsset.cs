@@ -259,7 +259,7 @@ namespace Renderite.Unity
                 Debug.Log($"Uploading Mesh {AssetId} (first: {!firstUploadCompleted}): {meshBuffer}\nHint: " + uploadHint +
                     "\nBounds: " + uploadData.bounds);
 
-            if (mesh != null && (!mesh.isReadable || lastIsSkinned))
+            if (mesh != null && (!mesh.isReadable || lastIsSkinned || uploadHint[MeshUploadHint.Flag.BindPoses]))
             {
                 if (mesh)
                     UnityEngine.Object.Destroy(mesh);
