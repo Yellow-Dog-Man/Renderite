@@ -8,6 +8,8 @@ namespace Renderite.Shared
     {
         public int displayIndex;
 
+        public ulong monitorHandle; 
+
         public RenderVector2i resolution;
         public RenderVector2i offset;
         public double refreshRate;
@@ -19,6 +21,7 @@ namespace Renderite.Shared
         public void Pack(ref MemoryPacker packer)
         {
             packer.Write(displayIndex);
+            packer.Write(monitorHandle);
 
             packer.Write(resolution);
             packer.Write(offset);
@@ -32,6 +35,7 @@ namespace Renderite.Shared
         public void Unpack(ref MemoryUnpacker unpacker)
         {
             unpacker.Read(ref displayIndex);
+            unpacker.Read(ref monitorHandle);
 
             unpacker.Read(ref resolution);
             unpacker.Read(ref offset);
