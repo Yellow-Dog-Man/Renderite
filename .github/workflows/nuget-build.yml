@@ -34,7 +34,7 @@ jobs:
       - name: 'Build NuGet packages'
         uses: Yellow-Dog-Man/composite-actions-templates/.github/actions/dotnet-build@606ac289d701be7b7d90e5ff8647dedf57d6d755
         with:
-          dotnet-build-args: '-p:Version=${{ github.ref_name }} -o nupkgs'
+          dotnet-build-args: '-p:Version=${{ github.event.release.tag_name }} -o nupkgs'
           dotnet-build-type: 'pack'
           dotnet-project-path: '${{ matrix.projects }}'
 
