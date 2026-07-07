@@ -14,6 +14,8 @@ namespace Renderite.Shared
         
         public bool keyboardInputActive;
 
+        public RenderVector2? compositionCursorPosition;
+
         public VR_OutputState vr;
 
         public void Pack(ref MemoryPacker packer)
@@ -21,6 +23,7 @@ namespace Renderite.Shared
             packer.Write(lockCursor);
             packer.Write(lockCursorPosition);
             packer.Write(keyboardInputActive);
+            packer.Write(compositionCursorPosition);
 
             packer.WriteObject(vr);
         }
@@ -30,6 +33,7 @@ namespace Renderite.Shared
             packer.Read(ref lockCursor);
             packer.Read(ref lockCursorPosition);
             packer.Read(ref keyboardInputActive);
+            packer.Read(ref compositionCursorPosition);
 
             packer.ReadObject(ref vr);
         }
