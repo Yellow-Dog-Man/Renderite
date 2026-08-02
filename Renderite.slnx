@@ -5,6 +5,7 @@
   </Folder>
   <Folder Name="/Solution Items/">
     <File Path="global.json" />
+    <File Path="Test-WithCoverage.ps1" />
   </Folder>
   <Project Path="Renderite.Shared.Tests/Renderite.Shared.Tests.csproj" />
   <Project Path="Renderite.Shared/Renderite.Shared.csproj" />
