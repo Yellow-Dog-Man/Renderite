@@ -1,4 +1,13 @@
 <Solution>
+  <Folder Name="/.github_workflows/">
+    <File Path=".github/workflows/nuget-build.yml" />
+    <File Path=".github/workflows/test.yml" />
+  </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="global.json" />
+  </Folder>
+  <Project Path="Renderite.Shared.Tests/Renderite.Shared.Tests.csproj" />
   <Project Path="Renderite.Shared/Renderite.Shared.csproj" />
+  <Project Path="Renderite.Unity.Tests/Renderite.Unity.Tests.csproj" />
   <Project Path="Renderite.Unity/Renderite.Unity.csproj" />
 </Solution>

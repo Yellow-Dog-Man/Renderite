@@ -1,0 +1,43 @@
+﻿<Project Sdk="MSTest.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+	<UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+	<MSTestParallelizeScope>MethodLevel</MSTestParallelizeScope>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.mtp" Version="10.0.1" />
+    <PackageReference Include="Unity3D" Version="3.1.1" />
+  </ItemGroup>
+	
+  <PropertyGroup>
+    <UnityVersion>2019.4.19f1</UnityVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Renderite.Unity\Renderite.Unity.csproj" />
+  </ItemGroup>
+	
+  <ItemGroup>
+    <None Update="testconfig.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+	
+  <Target Name="MakeUnityAssembliesCopyLocal" BeforeTargets="ResolveAssemblyReferences">
+    <ItemGroup>
+      <Reference Update="$(UnityModulesPath)\UnityEngine.dll">
+        <Private>true</Private>
+      </Reference>
+
+      <Reference Update="$(UnityModulesPath)\UnityEngine.*Module.dll">
+        <Private>true</Private>
+      </Reference>
+    </ItemGroup>
+  </Target>
+	
+</Project>
