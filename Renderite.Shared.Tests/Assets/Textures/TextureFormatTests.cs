@@ -3,6 +3,9 @@
 [TestClass]
 public class TextureFormatTests
 {
+    public static TextureFormat[] DefinedTextureFormatEnums =>
+        Enum.GetValues<TextureFormat>();
+
     [TestMethod]
     [DataRow(TextureFormat.RGBAHalf)]
     [DataRow(TextureFormat.ARGBHalf)]
@@ -50,5 +53,19 @@ public class TextureFormatTests
     {
         var undefinedFormat = (TextureFormat)int.MaxValue;
         Assert.ThrowsExactly<ArgumentException>(() => TextureFormatExtensions.IsHDR(undefinedFormat));
+    }
+
+    [TestMethod(UnfoldingStrategy = TestDataSourceUnfoldingStrategy.Unfold)]
+    [DynamicData(nameof(DefinedTextureFormatEnums))]
+    public void IsHDRCompliant_DefinedValue_DoesNotThrowException(TextureFormat definedFormat)
+    {
+        try
+        {
+            _ = TextureFormatExtensions.IsHDR(definedFormat);
+        }
+        catch
+        {
+            Assert.Fail($"TextureFormat '{definedFormat}' threw an exception during the call to 'TextureFormatExtensions.IsHDR'.");
+        }
     }
 }
