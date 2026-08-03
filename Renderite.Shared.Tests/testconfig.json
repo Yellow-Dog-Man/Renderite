@@ -1,0 +1,18 @@
+{
+  "platformOptions": {
+    "resultDirectory": "./TestResults/ByProject/Renderite.Shared/",
+    "Coverlet": {
+      "exclude": "[*.Tests]*",
+      "includeTestAssembly": false,
+      "excludeAssembliesWithoutSources": "MissingAll"
+    }
+  },
+  "commandLineOptions": {
+    "report-trx": true,
+    "coverlet": true,
+    "coverlet-output-format": [
+      "cobertura",
+      "json"
+    ]
+  }
+}

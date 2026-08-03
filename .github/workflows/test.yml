@@ -1,0 +1,53 @@
+name: Test Renderite Library
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '**.cs'
+      - '**.csproj'
+      - '**.props'
+      - '**/testconfig.json'
+      - 'global.json'
+      - '**/test.yml'
+  pull_request:
+    paths:
+      - '**.cs'
+      - '**.csproj'
+      - '**.props'
+      - '**/testconfig.json'
+      - 'global.json'
+      - '**/test.yml'
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+permissions:
+  contents: read
+  actions: read
+  checks: write
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout repository'
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          dotnet-version: 10.0.x
+
+      - name: Run tests
+        run: dotnet test --project ./Renderite.Shared.Tests/Renderite.Shared.Tests.csproj  --configuration Release
+
+      - name: Generate test report
+        if: ${{ !cancelled() }}
+        uses: dorny/test-reporter@a43b3a5f7366b97d083190328d2c652e1a8b6aa2 # V3.0.0
+        with:
+          name: Renderite.Test
+          path: '**/TestResults/**/*.trx'
+          reporter: dotnet-trx
