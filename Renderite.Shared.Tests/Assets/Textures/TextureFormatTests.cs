@@ -6,6 +6,11 @@ public class TextureFormatTests
     public static TextureFormat[] DefinedTextureFormatEnums =>
         Enum.GetValues<TextureFormat>();
 
+    /// <summary>
+    /// Tests that the <see cref="TextureFormatExtensions.IsHDR(TextureFormat)"/> method returns
+    /// <c>true</c> for known HDR-compliant texture formats.
+    /// </summary>
+    /// <param name="hdrFormat">A valid HDR-compliant texture format.</param>
     [TestMethod]
     [DataRow(TextureFormat.RGBAHalf)]
     [DataRow(TextureFormat.ARGBHalf)]
@@ -19,6 +24,11 @@ public class TextureFormatTests
     public void IsHDRCompliant_HDRFormat_ReturnsTrue(TextureFormat hdrFormat) =>
         Assert.IsTrue(TextureFormatExtensions.IsHDR(hdrFormat));
 
+    /// <summary>
+    /// Tests that the <see cref="TextureFormatExtensions.IsHDR(TextureFormat)"/> method returns
+    /// <c>false</c> for non-HDR texture formats.
+    /// </summary>
+    /// <param name="nonHdrFormat">A texture format that is not HDR-compliant.</param>
     [TestMethod]
     [DataRow(TextureFormat.Alpha8)]
     [DataRow(TextureFormat.R8)]
@@ -47,7 +57,10 @@ public class TextureFormatTests
     public void IsHDRCompliant_NonHDRFormat_ReturnsFalse(TextureFormat nonHdrFormat) =>
         Assert.IsFalse(TextureFormatExtensions.IsHDR(nonHdrFormat));
 
-
+    /// <summary>
+    /// Tests that the <see cref="TextureFormatExtensions.IsHDR(TextureFormat)"/> method throws an
+    /// exception when given an undefined <see cref="TextureFormat"/> value.
+    /// </summary>
     [TestMethod]
     public void IsHDRCompliant_UndefinedValue_ThrowsException()
     {
@@ -55,6 +68,11 @@ public class TextureFormatTests
         Assert.ThrowsExactly<ArgumentException>(() => TextureFormatExtensions.IsHDR(undefinedFormat));
     }
 
+    /// <summary>
+    /// Tests that the <see cref="TextureFormatExtensions.IsHDR(TextureFormat)"/> method does not throw an
+    /// exception when given a defined <see cref="TextureFormat"/> value.
+    /// </summary>
+    /// <param name="definedFormat">A defined texture format.</param>
     [TestMethod(UnfoldingStrategy = TestDataSourceUnfoldingStrategy.Unfold)]
     [DynamicData(nameof(DefinedTextureFormatEnums))]
     public void IsHDRCompliant_DefinedValue_DoesNotThrowException(TextureFormat definedFormat)
