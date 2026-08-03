@@ -175,6 +175,8 @@ namespace Renderite.Shared
                 case TextureFormat.ARGB32:
                 case TextureFormat.BGRA32:
                 case TextureFormat.RGBA32:
+                case TextureFormat.RGB565:
+                case TextureFormat.BGR565:
                 case TextureFormat.BC1:
                 case TextureFormat.BC2:
                 case TextureFormat.BC3:
