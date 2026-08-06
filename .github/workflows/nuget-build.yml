@@ -20,16 +20,28 @@ jobs:
       - name: 'Checkout repo'
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
 
-      - name: 'Install Unity'
-        uses: buildalon/unity-setup@ab626823a2d32033d5a7811169d0ce92e8010d38 # v2.3.0
-        if: contains(matrix.projects, 'Unity')
-        id: unity-setup
+      - name: 'Pull Unity from cache'
+        uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
         with:
-          version-file: 'None'
-          unity-version: '2019.4.19f1'
-          modules: |
-            windows-mono
-          cache-installation: 'true'
+          key: unity-setup-linux-2019.4.19f1-windows-mono
+          path: /home/runner/Unity/Hub/Editor
+
+      - name: 'Install Unity'
+        continue-on-error: true
+        run: |
+          curl -sL https://hub.unity3d.com/linux/keys/public | sudo gpg --dearmor -o /usr/share/keyrings/Unity_Technologies_ApS.gpg
+          sudo tee /etc/apt/sources.list.d/unity-cli.sources <<'EOF'
+          Types: deb
+          URIs: https://hub.unity3d.com/linux/repos/deb
+          Suites: unstable
+          Components: main
+          Signed-By: /usr/share/keyrings/Unity_Technologies_ApS.gpg
+          EOF
+
+          sudo apt-get update && sudo apt-get install -y unity-cli
+
+          unity editors -i
+          unity install 2019.4.19f1 -a x86_64 -m windows-mono --cm
 
       - name: 'Build NuGet packages'
         uses: Yellow-Dog-Man/composite-actions-templates/.github/actions/dotnet-build@606ac289d701be7b7d90e5ff8647dedf57d6d755
