@@ -95,6 +95,7 @@ namespace Renderite.Shared
                 typeof(TouchControllerState),
                 typeof(ViveControllerState),
                 typeof(WindowsMR_ControllerState),
+                typeof(ViveFocus3ControllerState),
             });
         }
     }
