@@ -1203,7 +1203,7 @@ namespace Renderite.Unity
         void ProcessReadbackTasks(List<RenderTextureReadbackTask> readbackTasks)
         {
             foreach(var task in readbackTasks)
-                RenderTextures.GetAsset(task.readbackTaskId).Handle(task);
+                RenderTextures.GetAsset(task.assetId).Handle(task);
         }
 
         bool GetConnectionParameters(out string queueName, out long queueCapacity)
