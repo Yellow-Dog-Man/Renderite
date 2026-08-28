@@ -30,6 +30,8 @@ namespace Renderite.Shared
         
         public List<CameraRenderTask> renderTasks;
 
+        public List<RenderTextureReadbackTask> readbackTasks;
+
         public override void Pack(ref MemoryPacker packer)
         {
             packer.Write(frameIndex);
@@ -46,6 +48,7 @@ namespace Renderite.Shared
 
             packer.WriteObjectList(renderSpaces);
             packer.WriteObjectList(renderTasks);
+            packer.WriteObjectList(readbackTasks);
         }
 
         public override void Unpack(ref MemoryUnpacker packer)
@@ -63,6 +66,7 @@ namespace Renderite.Shared
 
             packer.ReadObjectList(ref renderSpaces);
             packer.ReadObjectList(ref renderTasks);
+            packer.ReadObjectList(ref readbackTasks);
         }
     }
 }

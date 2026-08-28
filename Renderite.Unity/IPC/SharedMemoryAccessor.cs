@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Text;
+using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
 
 namespace Renderite.Unity
 {
@@ -35,6 +37,13 @@ namespace Renderite.Unity
                     $"Offset: {descriptor.offset}, Length: {descriptor.length}, BufferCapacity: {descriptor.bufferCapacity}, BufferId: {descriptor.bufferId}");
                 throw;
             }
+        }
+
+        public unsafe NativeArray<T> AccessAsNativeArray<T>(SharedMemoryBufferDescriptor<T> descriptor)
+            where T : unmanaged
+        {
+            var view = GetMemoryView(descriptor);
+            return NativeArrayUnsafeUtility.ConvertExistingDataToNativeArray<T>(view.Pointer + descriptor.offset, descriptor.length, Allocator.None);
         }
 
         public UnmanagedSpan<T> AccessDataUnmanaged<T>(SharedMemoryBufferDescriptor<T> descriptor)

@@ -12,6 +12,7 @@ namespace Renderite.Unity
 
         public Span<byte> RawData => view.Data;
         public Memory<byte> Memory => memory.Memory;
+        public unsafe byte* Pointer => view.Pointer;
         public unsafe UnmanagedSpan<byte> UnmanagedRawData => new UnmanagedSpan<byte>(view.Pointer, (int)capacity);
 
         MemoryView view;

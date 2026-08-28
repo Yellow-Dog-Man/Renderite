@@ -521,7 +521,7 @@ namespace Renderite.Unity
                     Debug.Log($"{DateTime.Now.ToMillisecondTimeString()} PROCESSED FRAME {data.frameIndex}");
 
                 // Check if there's any render tasks. If there's any, we'll need to run those after the frame has finished
-                if(data.renderTasks == null)
+                if(data.renderTasks == null && data.readbackTasks == null)
                     PackerMemoryPool.Instance.Return(data);
                 else
                 {
@@ -556,7 +556,12 @@ namespace Renderite.Unity
 
                 if(_dataWithRenderTasks != null)
                 {
-                    ProcessRenderTasks(_dataWithRenderTasks.renderTasks);
+                    if(_dataWithRenderTasks.readbackTasks != null)
+                        ProcessRenderTasks(_dataWithRenderTasks.renderTasks);
+
+                    if (_dataWithRenderTasks.readbackTasks != null)
+                        ProcessReadbackTasks(_dataWithRenderTasks.readbackTasks);
+
                     PackerMemoryPool.Instance.Return(_dataWithRenderTasks);
 
                     _dataWithRenderTasks = null;
@@ -1193,6 +1198,12 @@ namespace Renderite.Unity
                 RenderContextHelper.BeginRenderContext(previousContext.Value);
             else
                 RenderContextHelper.EndCurrentRenderContext();
+        }
+
+        void ProcessReadbackTasks(List<RenderTextureReadbackTask> readbackTasks)
+        {
+            foreach(var task in readbackTasks)
+                RenderTextures.GetAsset(task.readbackTaskId).Handle(task);
         }
 
         bool GetConnectionParameters(out string queueName, out long queueCapacity)
