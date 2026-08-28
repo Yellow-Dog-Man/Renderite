@@ -40,4 +40,8 @@
     </ItemGroup>
   </Target>
 	
+  <ItemGroup>
+    <PackageReference Update="Microsoft.Testing.Extensions.CodeCoverage" Version="18.10.0" />
+  </ItemGroup>
+	
 </Project>
