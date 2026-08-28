@@ -21,5 +21,21 @@ namespace Renderite.Shared
         /// and should not be processed
         /// </summary>
         public bool success;
+
+        public override void Pack(ref MemoryPacker packer)
+        {
+            base.Pack(ref packer);
+
+            packer.Write(readbackTaskId);
+            packer.Write(success);
+        }
+
+        public override void Unpack(ref MemoryUnpacker packer)
+        {
+            base.Unpack(ref packer);
+
+            packer.Read(ref readbackTaskId);
+            packer.Read(ref success);
+        }
     }
 }
