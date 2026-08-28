@@ -71,6 +71,8 @@ namespace Renderite.Shared
                 typeof(SetRenderTextureFormat),
                 typeof(RenderTextureResult),
                 typeof(UnloadRenderTexture),
+                typeof(RenderTextureReadbackTask),
+                typeof(RenderTextureReadbackResult),
 
                 typeof(SetDesktopTextureProperties),
                 typeof(DesktopTexturePropertiesUpdate),
