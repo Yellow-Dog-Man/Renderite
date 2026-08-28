@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace Renderite.Unity
 {
@@ -24,6 +25,27 @@ namespace Renderite.Unity
             RenderingManager.Instance.RenderTextures.RemoveAsset(this);
 
             PackerMemoryPool.Instance.Return(unload);
+        }
+
+        public void Handle(RenderTextureReadbackTask task)
+        {
+            // Do the readback directly into the buffer to avoid unecessary copies
+            var buffer = RenderingManager.Instance.SharedMemory.AccessAsNativeArray(task.resultData);
+
+            // Capture the task data. Since this is async processing, the task will be disposed before this completes
+            // so we need to capture it here
+            var result = new RenderTextureReadbackResult();
+            result.assetId = AssetId;
+            result.readbackTaskId = task.readbackTaskId;
+
+            AsyncGPUReadback.RequestIntoNativeArray(ref buffer, Texture, 0, task.readbackFormat.ToUnity(), readbackResult =>
+            {
+                // Indicate if this succeeded or not
+                result.success = !readbackResult.hasError;
+
+                // Inform the engine that this has completed and they can process the read back data
+                RenderingManager.Instance.SendAssetUpdate(result);
+            });
         }
 
         void ApplyUpdate(object untypedFormat)
