@@ -115,7 +115,7 @@ namespace Renderite.Unity
 
                     var instance = engine.Instantiate(Manager.gameObject);
 
-                    yield return instance.Setup(this, load.source, load.audioSystemSampleRate);
+                    yield return instance.Setup(this, load.source, load.additionalSource, load.audioSystemSampleRate);
 
                     if (instance.IsLoaded && !_cancellationToken.IsCancellationRequested)
                     {

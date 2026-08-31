@@ -11,7 +11,7 @@ namespace Renderite.Unity
     public interface IVideoPlaybackInstance
     {
         bool IsLoaded { get; }
-        IEnumerator Setup(VideoTextureAsset asset, string dataSource, int audioSystemSampleRate);
+        IEnumerator Setup(VideoTextureAsset asset, string dataSource, string additionalDataSource, int audioSystemSampleRate);
 
         double Length { get; }
         Vector2Int Size { get; }
