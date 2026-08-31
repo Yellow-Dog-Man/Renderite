@@ -556,7 +556,7 @@ namespace Renderite.Unity
 
                 if(_dataWithRenderTasks != null)
                 {
-                    if(_dataWithRenderTasks.readbackTasks != null)
+                    if(_dataWithRenderTasks.renderTasks != null)
                         ProcessRenderTasks(_dataWithRenderTasks.renderTasks);
 
                     if (_dataWithRenderTasks.readbackTasks != null)
