@@ -12,6 +12,8 @@ namespace Renderite.Unity
     {
         public RenderTexture Texture { get; private set; }
 
+        RenderTexture _sRGB_Readback;
+
         public void Handle(SetRenderTextureFormat format)
         {
             AssetIntegrator.EnqueueProcessing(ApplyUpdate, format, false);
@@ -38,7 +40,53 @@ namespace Renderite.Unity
             result.assetId = AssetId;
             result.readbackTaskId = task.readbackTaskId;
 
-            AsyncGPUReadback.RequestIntoNativeArray(ref buffer, Texture, 0, task.readbackFormat.ToUnity(), readbackResult =>
+            var source = Texture;
+
+            // We currently always create render textures as HDR which are in linear space
+            // If the readback format is not HDR, we want to perform sRGB conversion on the GPU
+            if(!task.readbackFormat.IsHDR())
+            {
+                var requestedFormat = RenderTextureFormat.Default;
+
+                switch (task.readbackFormat)
+                {
+                    case Shared.TextureFormat.RGB565:
+                        requestedFormat = RenderTextureFormat.RGB565;
+                        break;
+                }
+
+                if(_sRGB_Readback == null ||
+                    _sRGB_Readback.format != requestedFormat ||
+                    _sRGB_Readback.width != Texture.width ||
+                    _sRGB_Readback.height != Texture.height)
+                {
+                    FreeReadback();
+
+                    _sRGB_Readback = RenderTexture.GetTemporary(new RenderTextureDescriptor()
+                    {
+                        width = Texture.width,
+                        height = Texture.height,
+                        depthBufferBits = 0,
+                        autoGenerateMips = false,
+                        dimension = TextureDimension.Tex2D,
+                        bindMS = false,
+                        vrUsage = VRTextureUsage.None,
+                        stencilFormat = UnityEngine.Experimental.Rendering.GraphicsFormat.None,
+                        volumeDepth = 1,
+                        shadowSamplingMode = ShadowSamplingMode.None,
+                        msaaSamples = 1,
+
+                        colorFormat = requestedFormat,
+                        sRGB = true,
+                    });
+                }
+
+                Graphics.Blit(Texture, _sRGB_Readback);
+
+                source = _sRGB_Readback;
+            }
+
+            AsyncGPUReadback.RequestIntoNativeArray(ref buffer, source, 0, task.readbackFormat.ToUnity(), readbackResult =>
             {
                 // Indicate if this succeeded or not
                 result.success = !readbackResult.hasError;
@@ -46,6 +94,12 @@ namespace Renderite.Unity
                 // Inform the engine that this has completed and they can process the read back data
                 RenderingManager.Instance.SendAssetUpdate(result);
             });
+        }
+
+        void FreeReadback()
+        {
+            if (_sRGB_Readback != null)
+                RenderTexture.ReleaseTemporary(_sRGB_Readback);
         }
 
         void ApplyUpdate(object untypedFormat)
@@ -88,6 +142,8 @@ namespace Renderite.Unity
 
         void Destroy()
         {
+            FreeReadback();
+
             if (Texture == null)
                 return;
 
