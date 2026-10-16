@@ -60,10 +60,14 @@ namespace Renderite.Unity
         {
             get
             {
-                if (Renderite.Shared.Helper.IsWine || MainProcess is null)
+                if (Renderite.Shared.Helper.IsWineUnderLinux)
                     return !Directory.Exists($"/proc/{_mainProcessId}");
-                else
+                else if (Renderite.Shared.Helper.IsWineUnderMacOS)
+                    return !Renderite.Shared.Helper.PosixIsRunning(_mainProcessId);
+                else if (MainProcess != null)
                     return MainProcess.HasExited;
+
+                return false;
             }
         }
 
@@ -969,7 +973,7 @@ namespace Renderite.Unity
 
             Debug.Log("UniqueSessionId: " + UniqueSessionId);
 
-            if (!Renderite.Shared.Helper.IsWine)
+            if (!Renderite.Shared.Helper.IsWineUnderLinux && !Renderite.Shared.Helper.IsWineUnderMacOS)
             {
                 var wasapi = new CSCore.SoundOut.WasapiOut(false, CSCore.CoreAudioAPI.AudioClientShareMode.Shared, 100, initData.uniqueSessionId, true);
                 var audioFormat = new WaveFormat(wasapi.Device.DeviceFormat.SampleRate, 32, wasapi.Device.DeviceFormat.Channels, AudioEncoding.IeeeFloat);
@@ -995,7 +999,7 @@ namespace Renderite.Unity
 
             _mainProcessId = initData.mainProcessId;
 
-            if (!Renderite.Shared.Helper.IsWine)
+            if (!Renderite.Shared.Helper.IsWineUnderLinux && !Renderite.Shared.Helper.IsWineUnderMacOS)
                 MainProcess = System.Diagnostics.Process.GetProcessById(_mainProcessId);
 
             Task.Run(MainProcessWatchDog);
