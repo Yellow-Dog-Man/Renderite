@@ -70,14 +70,6 @@ namespace Renderite.Shared
         [DllImport("kernel32.dll", EntryPoint = "wine_get_dos_file_name", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Unicode)]
         private static extern IntPtr wine_get_dos_file_name([MarshalAs(UnmanagedType.LPStr)] string path);
 
-        // The above wine functions require manual memory management. WINE's example `winepath` code uses these, but I'm not sure if there's a way to do this through Marshal.
-        [DllImport("kernel32.dll")]
-        private static extern IntPtr GetProcessHeap();
-
-        [DllImport("kernel32.dll", SetLastError = true)]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool HeapFree(IntPtr hHeap, uint dwFlags, IntPtr lpMem);
-        
         public static string? DosToUnix(string path)
         {
             IntPtr ptr = wine_get_unix_file_name(path);
@@ -95,7 +87,7 @@ namespace Renderite.Shared
             }
             finally
             {
-                HeapFree(GetProcessHeap(), 0, ptr);
+                Marshal.FreeHGlobal(ptr);
             }
         }
 
@@ -116,7 +108,7 @@ namespace Renderite.Shared
             }
             finally
             {
-                HeapFree(GetProcessHeap(), 0, ptr);
+                Marshal.FreeHGlobal(ptr);
             }
         }
 
