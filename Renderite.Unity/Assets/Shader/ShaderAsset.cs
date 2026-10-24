@@ -44,7 +44,14 @@ namespace Renderite.Unity
             {
                 //UnityEngine.Debug.Log("Loading Shader Bundle: " + file + "\t" + this.GetHashCode());
 
-                var bundleRequest = UnityEngine.AssetBundle.LoadFromFileAsync(file);
+                string fileNameAdjusted = file;
+                // For some reason, macOS really does not like getting normal paths.
+                if (Renderite.Shared.Helper.IsWineUnderMacOS)
+                {
+                    fileNameAdjusted = Renderite.Shared.Helper.UnixToDos(file) ?? file;
+                }
+
+                var bundleRequest = UnityEngine.AssetBundle.LoadFromFileAsync(fileNameAdjusted);
 
                 bundleRequest.completed += result =>
                 {
