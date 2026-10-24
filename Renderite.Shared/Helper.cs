@@ -29,10 +29,16 @@ namespace Renderite.Shared
             }
             catch { }
 
-            // Initialize the kill -0 {PID} argv array, used on MacOS.
-            Marshal.WriteIntPtr(ARGV, 0, BIN_KILL); // argv[0] = "/bin/kill"
-            Marshal.WriteIntPtr(ARGV, IntPtr.Size, DASH_ZERO); // argv[1] = "-0"
-            Marshal.WriteIntPtr(ARGV, IntPtr.Size*3, IntPtr.Zero); // argv[3] = NULL
+            if (IsWineUnderMacOS) {
+                // Initialize the kill -0 {PID} argv array, used on MacOS.
+                BIN_KILL = Marshal.StringToCoTaskMemAnsi("/bin/kill");
+                DASH_ZERO = Marshal.StringToCoTaskMemAnsi("-0");
+                ARGV = Marshal.AllocCoTaskMem(4 * IntPtr.Size);
+
+                Marshal.WriteIntPtr(ARGV, 0, BIN_KILL); // argv[0] = "/bin/kill"
+                Marshal.WriteIntPtr(ARGV, IntPtr.Size, DASH_ZERO); // argv[1] = "-0"
+                Marshal.WriteIntPtr(ARGV, IntPtr.Size*3, IntPtr.Zero); // argv[3] = NULL
+            }
         }
 
         public const int EDITOR_PORT = 42512;
@@ -117,9 +123,9 @@ namespace Renderite.Shared
         // This is used to spawn a UNIX process.
         [DllImport("ntdll.dll", EntryPoint = "__wine_unix_spawnvp", CallingConvention = CallingConvention.Winapi)]
         private static extern int __wine_unix_spawnvp(IntPtr argv, int wait);
-        private static IntPtr BIN_KILL = Marshal.StringToCoTaskMemAnsi("/bin/kill");
-        private static IntPtr DASH_ZERO = Marshal.StringToCoTaskMemAnsi("-0");
-        private static IntPtr ARGV = Marshal.AllocCoTaskMem(4 * IntPtr.Size);
+        private static readonly IntPtr BIN_KILL;
+        private static readonly IntPtr DASH_ZERO;
+        private static readonly IntPtr ARGV;
 
         // /proc is not POSIX and does not exist on macOS. To query the status of a process, we spawn `kill -0 PID` and
         // determine its return status; if it returns 0, the process exists. If it returns another code, the process is inaccessible.
