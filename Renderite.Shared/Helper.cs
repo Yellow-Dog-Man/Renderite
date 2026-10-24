@@ -13,7 +13,6 @@ namespace Renderite.Shared
             {
                 WineVersion = wine_get_version();
 
-
                 // The returned values do not need to be freed; they're owned by WINE.
                 IntPtr sysname_ptr = IntPtr.Zero;
                 IntPtr release_ptr = IntPtr.Zero;
@@ -51,6 +50,7 @@ namespace Renderite.Shared
         public const string PRIMARY_QUEUE = "Primary";
         public const string BACKGROUND_QUEUE = "Background";
 
+        public static bool IsWine => IsWineUnderLinux || IsWineUnderMacOS;
         public static readonly bool IsWineUnderLinux;
         public static readonly bool IsWineUnderMacOS;
         public static readonly string? WineVersion;
