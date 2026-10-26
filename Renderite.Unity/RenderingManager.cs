@@ -60,10 +60,14 @@ namespace Renderite.Unity
         {
             get
             {
-                if (Renderite.Shared.Helper.IsWine || MainProcess is null)
+                if (Renderite.Shared.Helper.IsWineUnderLinux)
                     return !Directory.Exists($"/proc/{_mainProcessId}");
-                else
+                else if (Renderite.Shared.Helper.IsWineUnderMacOS)
+                    return !Renderite.Shared.Helper.PosixIsRunning(_mainProcessId);
+                else if (MainProcess != null)
                     return MainProcess.HasExited;
+
+                return false;
             }
         }
 
