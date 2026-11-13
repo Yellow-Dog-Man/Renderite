@@ -75,7 +75,8 @@ namespace Renderite.Unity
                     // Check if we reached the end. It's possible that the whole buffer is not filled
                     if (removedIndex < 0)
                         break;
-
+                    if (removedIndex >= transforms.Count)
+                        continue;
                     if (RenderingManager.IsDebug)
                     {
                         for (int ch = 0; ch < transforms[i].transform.childCount; ch++)
@@ -109,7 +110,8 @@ namespace Renderite.Unity
 
                     if (u.transformId < 0)
                         break;
-
+                    if (u.transformId >= transforms.Count)
+                        continue;
                     transforms[u.transformId].transform.SetParent(null, false);
 
                     if (RenderingManager.IsDebug)
@@ -122,7 +124,10 @@ namespace Renderite.Unity
 
                     if (u.transformId < 0)
                         break;
-
+                    if (u.transformId >= transforms.Count)
+                        continue;
+                    if (u.newParentId >= transforms.Count)
+                        continue;
                     var t = transforms[u.transformId];
                     var p = transforms[u.newParentId];
 
