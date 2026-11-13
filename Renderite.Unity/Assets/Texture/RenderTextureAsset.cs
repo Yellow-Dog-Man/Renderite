@@ -31,14 +31,24 @@ namespace Renderite.Unity
 
         public void Handle(RenderTextureReadbackTask task)
         {
-            // Do the readback directly into the buffer to avoid unecessary copies
-            var buffer = RenderingManager.Instance.SharedMemory.AccessAsNativeArray(task.resultData);
-
             // Capture the task data. Since this is async processing, the task will be disposed before this completes
             // so we need to capture it here
             var result = new RenderTextureReadbackResult();
             result.assetId = AssetId;
             result.readbackTaskId = task.readbackTaskId;
+
+            // If the texture is already gone, send failure
+            if (Texture == null)
+            {
+                result.success = false;
+
+                // Inform the engine that this has completed and they can process the read back data
+                RenderingManager.Instance.SendAssetUpdate(result);
+                return;
+            }
+
+            // Do the readback directly into the buffer to avoid unecessary copies
+            var buffer = RenderingManager.Instance.SharedMemory.AccessAsNativeArray(task.resultData);
 
             var source = Texture;
 
