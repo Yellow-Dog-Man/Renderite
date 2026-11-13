@@ -1206,8 +1206,27 @@ namespace Renderite.Unity
 
         void ProcessReadbackTasks(List<RenderTextureReadbackTask> readbackTasks)
         {
-            foreach(var task in readbackTasks)
-                RenderTextures.GetAsset(task.assetId).Handle(task);
+            foreach (var task in readbackTasks)
+            {
+                var asset = RenderTextures.GetAsset(task.assetId);
+
+                if(asset != null)
+                    asset.Handle(task);
+                else
+                {
+                    // Since readbacks are handled through the primary queue state updates, but texture
+                    // unload is through background, it's possible for texture to be unloaded while there's
+                    // still a pending readback, so we handle this explicitly
+                    // We simply send back message indicating that readback failed
+                    var result = new RenderTextureReadbackResult();
+
+                    result.assetId = task.assetId;
+                    result.readbackTaskId = task.readbackTaskId;
+                    result.success = false;
+
+                    RenderingManager.Instance.SendAssetUpdate(result);
+                }
+            }
         }
 
         bool GetConnectionParameters(out string queueName, out long queueCapacity)
