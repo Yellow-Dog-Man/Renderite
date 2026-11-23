@@ -76,6 +76,10 @@ namespace Renderite.Unity
                     if (removedIndex < 0)
                         break;
 
+                    if (removedIndex >= transforms.Count)
+                        throw new InvalidOperationException($"Invalid removedIndex in removal. removedIndex: {removedIndex}, " +
+                            $"transforms.Count: {transforms.Count}, updateIndex: {i}");
+
                     if (RenderingManager.IsDebug)
                     {
                         for (int ch = 0; ch < transforms[i].transform.childCount; ch++)
@@ -110,6 +114,10 @@ namespace Renderite.Unity
                     if (u.transformId < 0)
                         break;
 
+                    if (u.transformId >= transforms.Count)
+                        throw new InvalidOperationException($"Invalid transformId in parentUpdate. transformId: {u.transformId}, " +
+                            $"newParentId: {u.newParentId}, transforms.Count: {transforms.Count}, updateIndex: {i}");
+
                     transforms[u.transformId].transform.SetParent(null, false);
 
                     if (RenderingManager.IsDebug)
@@ -122,6 +130,10 @@ namespace Renderite.Unity
 
                     if (u.transformId < 0)
                         break;
+
+                    if (u.newParentId >= transforms.Count)
+                        throw new InvalidOperationException($"Invalid newParentId in parentUpdate. transformId: {u.transformId}, " +
+                            $"newParentId: {u.newParentId}, transforms.Count: {transforms.Count}, updateIndex: {i}");
 
                     var t = transforms[u.transformId];
                     var p = transforms[u.newParentId];
@@ -147,6 +159,10 @@ namespace Renderite.Unity
 
                     if (u.transformId < 0)
                         break;
+
+                    if (u.transformId >= transforms.Count)
+                        throw new InvalidOperationException($"Invalid transformId in poseUpdate. transformId: {u.transformId}, " +
+                            $"transforms.Count: {transforms.Count}, updateIndex: {i}");
 
                     var t = transforms[u.transformId].transform;
 
