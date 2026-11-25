@@ -7,7 +7,7 @@ using System.Text;
 namespace Renderite.Shared
 {
     [DataModelType]
-    [OldTypeName("FrooxEngine.LightTyle", "FrooxEngine")]
+    [OldTypeName("FrooxEngine.LightType", "FrooxEngine")]
     public enum LightType : byte
     {
         Point,
