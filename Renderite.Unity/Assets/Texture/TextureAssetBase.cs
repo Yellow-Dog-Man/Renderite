@@ -179,6 +179,9 @@ namespace Renderite.Unity
             if (!_texturePropertiesDirty)
                 return;
 
+            if (UnityTexture == null)
+                return;
+
             _texturePropertiesDirty = false;
 
             DoAssignTextureProperties();
