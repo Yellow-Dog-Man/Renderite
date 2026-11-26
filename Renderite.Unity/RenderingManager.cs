@@ -929,7 +929,7 @@ namespace Renderite.Unity
                 case RenderDecouplingConfig decouple:
                     _decoupleActivationInterval = decouple.decoupleActivateInterval;
                     _decoupledMaxAssetProcessingTime = decouple.decoupledMaxAssetProcessingTime;
-                    _recoupleFrames = decouple.recoupleFrameCount;
+                    _recoupleFrameCount = decouple.recoupleFrameCount;
                     return;
 
                 case GaussianSplatConfig gaussianSplatConfig:
