@@ -40,21 +40,14 @@ namespace Renderite.Shared
 
             packer.Write(isDeviceActive, isTracking, hasBoundHand);
 
-            if (isTracking)
-            {
-                packer.Write(position);
-                packer.Write(rotation);
+            packer.Write(position);
+            packer.Write(rotation);
 
-                if(hasBoundHand)
-                {
-                    packer.Write(handPosition);
-                    packer.Write(handRotation);
-                }
+            packer.Write(handPosition);
+            packer.Write(handRotation);
 
-                // Battery level isn't updated when the controller is not tracking
-                packer.Write(batteryLevel);
-                packer.Write(batteryCharging);
-            }
+            packer.Write(batteryLevel);
+            packer.Write(batteryCharging);
         }
 
         public override void Unpack(ref MemoryUnpacker unpacker)
@@ -67,20 +60,14 @@ namespace Renderite.Shared
 
             unpacker.Read(out isDeviceActive, out isTracking, out hasBoundHand);
 
-            if (isTracking)
-            {
-                unpacker.Read(ref position);
-                unpacker.Read(ref rotation);
+            unpacker.Read(ref position);
+            unpacker.Read(ref rotation);
 
-                if(hasBoundHand)
-                {
-                    unpacker.Read(ref handPosition);
-                    unpacker.Read(ref handRotation);
-                }
+            unpacker.Read(ref handPosition);
+            unpacker.Read(ref handRotation);
 
-                unpacker.Read(ref batteryLevel);
-                unpacker.Read(ref batteryCharging);
-            }
+            unpacker.Read(ref batteryLevel);
+            unpacker.Read(ref batteryCharging);
         }
 
         static VR_ControllerState()
